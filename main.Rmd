@@ -25,3 +25,25 @@ head(online_data)
 str(online_data)
 ```
 
+Checking for missing data
+```{r}
+sum(is.na(online_data))
+```
+
+The data set has no missing information. 
+Weekend and Revenue are to be converted into factors.
+Operating System, Browser,Region,Traffic Type also needs to be converted into factors
+```{r}
+online_data$Revenue<-as.factor(as.numeric(online_data$Revenue))
+online_data$Weekend<-as.factor(as.numeric(online_data$Weekend))
+
+online_data$OperatingSystems<-as.factor(online_data$OperatingSystems)
+online_data$Browser<-as.factor(online_data$Browser)
+online_data$Region<-as.factor(online_data$Region)
+online_data$TrafficType<-as.factor(online_data$TrafficType)
+```
+
+```{r}
+summary(online_data)
+```
+
