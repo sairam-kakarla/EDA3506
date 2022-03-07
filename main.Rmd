@@ -21,3 +21,7 @@ online_data<-read.csv("online_shoppers_intention.csv")
 head(online_data)
 ```
 
+```{r}
+str(online_data)
+```
+
