@@ -1,0 +1,8 @@
+---
+title: "CSE 3056 J Component"
+author: 
+       - "Lakshmi Sairam Kakarla"
+       - "K Uday"
+       - "M Nivas"
+output: html_notebook
+---
