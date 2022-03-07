@@ -6,3 +6,18 @@ author:
        - "M Nivas"
 output: html_notebook
 ---
+
+## Loaading required packages
+```{r}
+rm(list=ls())
+library(ggplot2)
+library(dplyr)
+```
+
+# Data Preprocessing
+## Loading the dataset
+```{r}
+online_data<-read.csv("online_shoppers_intention.csv")
+head(online_data)
+```
+

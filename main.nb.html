@@ -221,9 +221,54 @@ pre code {
 
 
 <!-- rnb-text-begin -->
+<div id="loaading-required-packages" class="section level2">
+<h2>Loaading required packages</h2>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0obGlzdD1scygpKVxubGlicmFyeShnZ3Bsb3QyKVxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
+<pre class="r"><code>rm(list=ls())
+library(ggplot2)
+library(dplyr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZHBseXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
+<pre><code>
+Attaching package: ‘dplyr’
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ1NFIDMwNTYgSiBDb21wb25lbnQiCmF1dGhvcjogCiAgICAgICAtICJMYWtzaG1pIFNhaXJhbSBLYWthcmxhIgogICAgICAgLSAiSyBVZGF5IgogICAgICAgLSAiTSBOaXZhcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQo=</div>
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="data-preprocessing" class="section level1">
+<h1>Data Preprocessing</h1>
+<div id="loading-the-dataset" class="section level2">
+<h2>Loading the dataset</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub25saW5lX2RhdGE8LXJlYWQuY3N2KFwib25saW5lX3Nob3BwZXJzX2ludGVudGlvbi5jc3ZcIilcbmhlYWQob25saW5lX2RhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>online_data&lt;-read.csv(&quot;online_shoppers_intention.csv&quot;)
+head(online_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6MTgsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzYgw5cgMThdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQTdWVU1XL1RRQlEreDNhaU9Fb29LWUlKUmhhVURMQWdNU1N0UWhDVjJnUW5LVjFRdVRxWHhLcHp0dXh6MnNDQ2hOZ1pXSXFRbUxzd01NSEkySUdOR1ltNUNQNUI0YTY1NTlvbUVRakVTYWYzdmUvdTNidjM3clBOeHRZTlk4dEFDS2xJemZLcGM0ajBYcmRadVltUWx1R09nalNVRjNhZmIxcm1vTXhua2M4c1dqeEt2MWxmTlA3M3VRcWZtWmdWbFMrbno2MjNrOEYxdmRmclBUeDZVSC82YXVaYnpXL2YwYWRiRUZjN09oRGpKZXdIdjNZbzdZdEhYKzY4dWZDNDl2emE1Y09Qbi9QcHVOcDdhY0gvY1B6c3lydDdYNlA0ZzZ1dmo5OXF4WCtvL3kvalZPaWJPbjhtQkpKMXlJUTRBVWRMU0hSMnhxb3I0UkJnZzFnQW0yUUg0RnJvU0tpdGhaUUF2WTc5TXpnRnVPRk9BTFlzQnJCRHZOUmxkTXZCQWR3bHV1RUFXOHoxT1RwQnYycENpOVdXbWJNT2R0NjZtUG5ZUG1WT3ZDcHp5RHgvMHR2TUQxbUJLaXNvYkpDOTdVMDdzRVVac3RJV0d4Rnd6cHVFaFQ2MTZURGFkWHFRQ2dmTmI0V0I1c3REa1hiUnVoekp6bE04SnRENXNpUkxLLzJ4VGUyQStaalpFM2pqUzBsMnV4RUs0Rks1WEx4TEI2NC9QcVV3YU9SaWdreUhsTnErMnc4dFpoSUhNOUtIUEVrMkhWUllkVU5xRVpPdkJaTEszOTYzV1p3dzJuaElOckVUbmpFZGoxZzJkaHFST1BWMWw3S1JkSlphSGhGWjZMQXpEUmdaUTFodTFYZjNndWpCc2lZWnhtN1M5ZkZnWUZ2ZHFRYzlLc2gzakZHNSs0VHNFZ3JWNVV6KzNkR1FwTjRoei9OVTRTMkUxakpQWnErVlhTQUpvNDhacmc1OEhqS1RSZUs0bk91Smx2SERNdUtIcWFlQ0ZUOUZuQXVwU042dldLT1E3bGF1U3hYRlB3NUZxZ3B3ZVpaU2c0dnAwQ05DaDNiMFk5QWR2RU5BRFNWZTVHbU5WYyszS2Z3UEROSGlLbk5acEJyRGNoMWdacEkvK1FsdmVPWGsrd1lBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Administrative"],"name":[1],"type":["int"],"align":["right"]},{"label":["Administrative_Duration"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Informational"],"name":[3],"type":["int"],"align":["right"]},{"label":["Informational_Duration"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ProductRelated"],"name":[5],"type":["int"],"align":["right"]},{"label":["ProductRelated_Duration"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["BounceRates"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["ExitRates"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["PageValues"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["SpecialDay"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Month"],"name":[11],"type":["fctr"],"align":["left"]},{"label":["OperatingSystems"],"name":[12],"type":["int"],"align":["right"]},{"label":["Browser"],"name":[13],"type":["int"],"align":["right"]},{"label":["Region"],"name":[14],"type":["int"],"align":["right"]},{"label":["TrafficType"],"name":[15],"type":["int"],"align":["right"]},{"label":["VisitorType"],"name":[16],"type":["fctr"],"align":["left"]},{"label":["Weekend"],"name":[17],"type":["lgl"],"align":["right"]},{"label":["Revenue"],"name":[18],"type":["lgl"],"align":["right"]}],"data":[{"1":"0","2":"0","3":"0","4":"0","5":"1","6":"0.000000","7":"0.20000000","8":"0.2000000","9":"0","10":"0","11":"Feb","12":"1","13":"1","14":"1","15":"1","16":"Returning_Visitor","17":"FALSE","18":"FALSE","_rn_":"1"},{"1":"0","2":"0","3":"0","4":"0","5":"2","6":"64.000000","7":"0.00000000","8":"0.1000000","9":"0","10":"0","11":"Feb","12":"2","13":"2","14":"1","15":"2","16":"Returning_Visitor","17":"FALSE","18":"FALSE","_rn_":"2"},{"1":"0","2":"0","3":"0","4":"0","5":"1","6":"0.000000","7":"0.20000000","8":"0.2000000","9":"0","10":"0","11":"Feb","12":"4","13":"1","14":"9","15":"3","16":"Returning_Visitor","17":"FALSE","18":"FALSE","_rn_":"3"},{"1":"0","2":"0","3":"0","4":"0","5":"2","6":"2.666667","7":"0.05000000","8":"0.1400000","9":"0","10":"0","11":"Feb","12":"3","13":"2","14":"2","15":"4","16":"Returning_Visitor","17":"FALSE","18":"FALSE","_rn_":"4"},{"1":"0","2":"0","3":"0","4":"0","5":"10","6":"627.500000","7":"0.02000000","8":"0.0500000","9":"0","10":"0","11":"Feb","12":"3","13":"3","14":"1","15":"4","16":"Returning_Visitor","17":"TRUE","18":"FALSE","_rn_":"5"},{"1":"0","2":"0","3":"0","4":"0","5":"19","6":"154.216667","7":"0.01578947","8":"0.0245614","9":"0","10":"0","11":"Feb","12":"2","13":"2","14":"1","15":"3","16":"Returning_Visitor","17":"FALSE","18":"FALSE","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[18]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ1NFIDMwNTYgSiBDb21wb25lbnQiCmF1dGhvcjogCiAgICAgICAtICJMYWtzaG1pIFNhaXJhbSBLYWthcmxhIgogICAgICAgLSAiSyBVZGF5IgogICAgICAgLSAiTSBOaXZhcyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgTG9hYWRpbmcgcmVxdWlyZWQgcGFja2FnZXMKYGBge3J9CnJtKGxpc3Q9bHMoKSkKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KGRwbHlyKQpgYGAKCiMgRGF0YSBQcmVwcm9jZXNzaW5nCiMjIExvYWRpbmcgdGhlIGRhdGFzZXQKYGBge3J9Cm9ubGluZV9kYXRhPC1yZWFkLmNzdigib25saW5lX3Nob3BwZXJzX2ludGVudGlvbi5jc3YiKQpoZWFkKG9ubGluZV9kYXRhKQpgYGAKCg==</div>
 
 
 
