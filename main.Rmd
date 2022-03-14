@@ -47,3 +47,14 @@ online_data$TrafficType<-as.factor(online_data$TrafficType)
 summary(online_data)
 ```
 
+## Exploratory Data Analysis
+```{r}
+revenue_Ratio<-table(online_data$Revenue)
+labels<-c(paste("No ",as.character(100*round(revenue_Ratio[1]/(revenue_Ratio[1]+revenue_Ratio[2]),2))),paste("Yes ",as.character(100*round(revenue_Ratio[2]/(revenue_Ratio[1]+revenue_Ratio[2]),2))))
+pie(revenue_Ratio,labels=labels,clockwise = TRUE)
+```
+Around 15 of the total user activity recorded is of the revenue generating nature. This must be considered while dealing with classification algorithms, due to the existence of Majority Class. Based on the given information, using Majority class model, we would achieve an accuracy of around 85%. This would also be a base case for our classification models.
+```{r}
+plot(online_data$PageValues,col=online_data$Revenue)
+```
+
