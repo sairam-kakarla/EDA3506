@@ -20,12 +20,12 @@ library(dplyr)
 online_data<-read.csv("online_shoppers_intention.csv")
 head(online_data)
 ```
-
+## Structure of data
 ```{r}
 str(online_data)
 ```
 
-Checking for missing data
+## Checking for missing data
 ```{r}
 sum(is.na(online_data))
 ```
@@ -42,11 +42,11 @@ online_data$Browser<-as.factor(online_data$Browser)
 online_data$Region<-as.factor(online_data$Region)
 online_data$TrafficType<-as.factor(online_data$TrafficType)
 ```
-
+## Summary of data
 ```{r}
 summary(online_data)
 ```
-
+# Month wise Bounce rate
 ```{r}
 library(dplyr)
 library(formattable)
@@ -58,7 +58,7 @@ g <- online_data %>%
 g$Percentage <- formattable::percent(g$Percentage)  
 g
 ```
-
+## Analysing Month wise bounce rate and exit rate
 ```{r}
 library(ggplot2)
 x <- online_data %>%
@@ -77,12 +77,12 @@ p<-ggplot(x, aes(x=reorder(Month, -Percente), y=Percente, fill=Month)) +
 library(cowplot)
 plot_grid(q, p,labels = "AUTO", ncol = 1)
 ```
-
+## Pairplot for analysing the relation between variables
 ```{r}
 dupdata <- data.frame(online_data$Administrative_Duration,online_data$Informational_Duration,online_data$ProductRelated_Duration,online_data$Revenue)
 pairs(dupdata)
 ```
-
+## Analysing revenue by bounce rate, exit rate and page value
 ```{r}
 library(ggplot2)
 p1<-ggplot(online_data, aes(x=Revenue, y=BounceRates, fill=Revenue)) +
@@ -98,7 +98,7 @@ library(cowplot)
 plot_grid(p1, p2, p3,labels = "AUTO", ncol = 2)
 ```
 
-
+## Count plot
 ```{r}
 library("ggplot2")
 a<-ggplot(online_data, aes(x=factor(Region)))+
@@ -117,12 +117,48 @@ library(cowplot)
 plot_grid(a, b, c,d,labels = "AUTO", ncol = 2)
 ```
 
+## Splitting data into train and test
 ```{r}
-relation <- lm(Revenue~ Administrative+Administrative_Duration+Informational+Informational_Duration+ProductRelated+ProductRelated_Duration+BounceRates+ExitRates+PageValues+SpecialDay+Month+OperatingSystems+Browser+Region+TrafficType+VisitorType+Weekend,data=online_data)
-summary(relation)
+library(rpart)
+library(rpart.plot)
+train_test <- function(online_data, size = 0.8, train = TRUE) {
+    n_row = nrow(online_data)
+    total_row = size * n_row
+    train_sample <- 1: total_row
+    if (train == TRUE) {
+        return (online_data[train_sample, ])
+    } else {
+        return (online_data[-train_sample, ])
+    }
+}
+train_test(online_data, size = 0.8, train = TRUE)
+
+```
+## Dimensions of train and test data
+```{r}
+train <- train_test(online_data, 0.8, train = TRUE)
+test <- train_test(online_data, 0.8, train = FALSE)
+dim(train)
+dim(test)
 ```
 
 ```{r}
-str(online_data)
+prop.table(table(train$Revenue))
+```
+## Creation of model
+```{r}
+mod <- rpart(Revenue~., data = train, method = 'class')
+rpart.plot(mod)
+```
+## Predicting values for test
+```{r}
+predict_unseen <-predict(mod, test, type = 'class')
+table_mat <- table(test$Revenue, predict_unseen)
+table_mat
+```
+## Accuracy Test
+```{r}
+accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
+print(paste('Accuracy for test', accuracy_Test))
 ```
 
