@@ -136,14 +136,31 @@ train_test(online_data, size = 0.8, train = TRUE)
 ```
 ## Dimensions of train and test data
 ```{r}
-train <- train_test(online_data, 0.8, train = TRUE)
-test <- train_test(online_data, 0.8, train = FALSE)
-dim(train)
-dim(test)
+split_x=sample(1:nrow(online_data),0.8*nrow(online_data))
+train <- online_data[split_x,]
+test <- online_data[-split_x,]
+nrow(train)
+nrow(test)
+nrow(train[train$Revenue==0,])
+nrow(train[train$Revenue==1,])
+```
+Downsampling the Non revenue datapoints to match the number of revenue datapoints to eliminate majority class
+```{r}
+ds_x<-sample(1:nrow(train[train$Revenue==0,]),1530)
+train_p=train[train$Revenue==1,]
+train_f=train[train$Revenue==0,][ds_x,]
+train=rbind(train_f,train_p)
+nrow(train[train$Revenue==0,])
+nrow(train[train$Revenue==1,])
+
+```
+Shuffling the data
+```{r}
+train<-train[sample(1:nrow(train)),]
 ```
 
 ```{r}
-prop.table(table(train$Revenue))
+str(test)
 ```
 ## Creation of model
 ```{r}
@@ -160,5 +177,18 @@ table_mat
 ```{r}
 accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
 print(paste('Accuracy for test', accuracy_Test))
+```
+## SVM
+
+
+## Exploratory Data Analysis
+```{r}
+revenue_Ratio<-table(online_data$Revenue)
+labels<-c(paste("No ",as.character(100*round(revenue_Ratio[1]/(revenue_Ratio[1]+revenue_Ratio[2]),2))),paste("Yes ",as.character(100*round(revenue_Ratio[2]/(revenue_Ratio[1]+revenue_Ratio[2]),2))))
+pie(revenue_Ratio,labels=labels,clockwise = TRUE)
+```
+Around 15 of the total user activity recorded is of the revenue generating nature. This must be considered while dealing with classification algorithms, due to the existence of Majority Class. Based on the given information, using Majority class model, we would achieve an accuracy of around 85%. This would also be a base case for our classification models.
+```{r}
+plot(online_data$PageValues,col=online_data$Revenue)
 ```
 
