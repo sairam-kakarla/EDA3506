@@ -14,18 +14,18 @@ library(ggplot2)
 library(dplyr)
 ```
 
-# Data Preprocessing
+# data Preprocessing
 ## Loading the dataset
 ```{r}
 online_data<-read.csv("online_shoppers_intention.csv")
 head(online_data)
 ```
-
+## Structure of data
 ```{r}
 str(online_data)
 ```
 
-Checking for missing data
+## Checking for missing data
 ```{r}
 sum(is.na(online_data))
 ```
@@ -42,10 +42,144 @@ online_data$Browser<-as.factor(online_data$Browser)
 online_data$Region<-as.factor(online_data$Region)
 online_data$TrafficType<-as.factor(online_data$TrafficType)
 ```
-
+## Summary of data
 ```{r}
 summary(online_data)
 ```
+# Month wise Bounce rate
+```{r}
+library(dplyr)
+library(formattable)
+g <- online_data %>%
+  group_by(Month) %>%
+  summarise(BounceRates = n()) %>%
+  mutate(Percentage = round(BounceRates / sum(BounceRates),3)) %>%
+  arrange(desc(Percentage))
+g$Percentage <- formattable::percent(g$Percentage)  
+g
+```
+## Analysing Month wise bounce rate and exit rate
+```{r}
+library(ggplot2)
+x <- online_data %>%
+  group_by(Month) %>%
+  summarise(ExitRates = n()) %>%
+  mutate(Percente = round(ExitRates / sum(ExitRates),3)) %>%
+  arrange(desc(Percente))
+x$Percente <- formattable::percent(x$Percente)  
+x
+q<-ggplot(g, aes(x=reorder(Month, -Percentage),y=Percentage,fill=Month))+
+  geom_bar(stat="identity")+theme_minimal()+
+  ggtitle("Month wise bounce rates")
+p<-ggplot(x, aes(x=reorder(Month, -Percente), y=Percente, fill=Month)) +
+  geom_bar(stat="identity")+theme_minimal()+
+  ggtitle("Month wise exit rates")
+library(cowplot)
+plot_grid(q, p,labels = "AUTO", ncol = 1)
+```
+## Pairplot for analysing the relation between variables
+```{r}
+dupdata <- data.frame(online_data$Administrative_Duration,online_data$Informational_Duration,online_data$ProductRelated_Duration,online_data$Revenue)
+pairs(dupdata)
+```
+## Analysing revenue by bounce rate, exit rate and page value
+```{r}
+library(ggplot2)
+p1<-ggplot(online_data, aes(x=Revenue, y=BounceRates, fill=Revenue)) +
+  geom_boxplot() +
+  ggtitle('Revenue on bouncerates')
+p2<-ggplot(online_data, aes(x=Revenue, y=PageValues, fill=Revenue)) +
+  geom_boxplot() +
+  ggtitle('Revenue on pagevalues')
+p3<-ggplot(online_data, aes(x=Revenue, y=ExitRates,fill=Revenue)) +
+  geom_boxplot()+
+  ggtitle('Revenue on exitrates')
+library(cowplot)
+plot_grid(p1, p2, p3,labels = "AUTO", ncol = 2)
+```
+
+## Count plot
+```{r}
+library("ggplot2")
+a<-ggplot(online_data, aes(x=factor(Region)))+
+ geom_bar(stat="count")+
+ ggtitle('Region wise count')
+b<-ggplot(online_data, aes(x=factor(TrafficType)))+
+ geom_bar(stat="count")+
+ ggtitle('Traffic wise count')
+c<-ggplot(online_data, aes(x=factor(Browser)))+
+ geom_bar(stat="count")+
+ ggtitle('Browser wise count')
+d<-ggplot(online_data, aes(x=factor(OperatingSystems)))+
+ geom_bar(stat="count")+
+ ggtitle('OS wise count ')
+library(cowplot)
+plot_grid(a, b, c,d,labels = "AUTO", ncol = 2)
+```
+
+## Splitting data into train and test
+```{r}
+library(rpart)
+library(rpart.plot)
+train_test <- function(online_data, size = 0.8, train = TRUE) {
+    n_row = nrow(online_data)
+    total_row = size * n_row
+    train_sample <- 1: total_row
+    if (train == TRUE) {
+        return (online_data[train_sample, ])
+    } else {
+        return (online_data[-train_sample, ])
+    }
+}
+train_test(online_data, size = 0.8, train = TRUE)
+
+```
+## Dimensions of train and test data
+```{r}
+split_x=sample(1:nrow(online_data),0.8*nrow(online_data))
+train <- online_data[split_x,]
+test <- online_data[-split_x,]
+nrow(train)
+nrow(test)
+nrow(train[train$Revenue==0,])
+nrow(train[train$Revenue==1,])
+```
+Downsampling the Non revenue datapoints to match the number of revenue datapoints to eliminate majority class
+```{r}
+ds_x<-sample(1:nrow(train[train$Revenue==0,]),1530)
+train_p=train[train$Revenue==1,]
+train_f=train[train$Revenue==0,][ds_x,]
+train=rbind(train_f,train_p)
+nrow(train[train$Revenue==0,])
+nrow(train[train$Revenue==1,])
+
+```
+Shuffling the data
+```{r}
+train<-train[sample(1:nrow(train)),]
+```
+
+```{r}
+str(test)
+```
+## Creation of model
+```{r}
+mod <- rpart(Revenue~., data = train, method = 'class')
+rpart.plot(mod)
+```
+## Predicting values for test
+```{r}
+predict_unseen <-predict(mod, test, type = 'class')
+table_mat <- table(test$Revenue, predict_unseen)
+table_mat
+```
+## Accuracy Test
+```{r}
+accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
+print(paste('Accuracy for test', accuracy_Test))
+```
+## SVM
+
 
 ## Exploratory Data Analysis
 ```{r}
