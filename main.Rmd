@@ -162,11 +162,22 @@ train<-train[sample(1:nrow(train)),]
 ```{r}
 str(test)
 ```
+
+
 ## Creation of model
 ```{r}
+train$VisitorType <- as.factor(train$VisitorType)
+train$Month <- as.factor(train$Month)
 mod <- rpart(Revenue~., data = train, method = 'class')
-rpart.plot(mod)
+library(party)
+modeldc <- ctree(Revenue ~ .,train)
+plot(modeldc)
 ```
+
+```{r}
+str(train)
+```
+
 ## Predicting values for test
 ```{r}
 predict_unseen <-predict(mod, test, type = 'class')
@@ -179,7 +190,59 @@ accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
 print(paste('Accuracy for test', accuracy_Test))
 ```
 ## SVM
+```{r}
+library(e1071)
+classifier = svm(formula = Revenue ~ Administrative+Administrative_Duration+Informational+Informational+Informational_Duration+ProductRelated+ProductRelated_Duration+BounceRates+ExitRates+Weekend+VisitorType+TrafficType+Browser+Region+OperatingSystems+Month+SpecialDay+PageValues,data = train,
+                 type = 'C-classification',
+                 kernel = 'linear')
+```
+# Predicting and Making the Confusion Matrix
+```{r}
+y_pred = predict(classifier, newdata = test)
+cm = table(test$Revenue, y_pred)
+cm
+```
+#SVM accuracy
+```{r}
+a_Test <- sum(diag(cm)) / sum(cm)
+print(paste('Accuracy for test', a_Test))
+```
+#Visualizing the train and test set data
+```{r}
+library(e1071)
+svmf = svm(Revenue~ Administrative+Administrative_Duration+Informational+Informational+Informational_Duration+ProductRelated+ProductRelated_Duration+BounceRates+ExitRates+Weekend+VisitorType+TrafficType+Browser+Region+OperatingSystems+Month+SpecialDay+PageValues, data = train, kernel = "linear", cost =10, scale = FALSE)
 
+```
+#logistic regression
+```{r}
+logmodel <- glm(Revenue ~ ., data = train, family = "binomial")
+#summary(logmodel)
+```
+#predicting test data
+```{r}
+logmodel1 <- glm(Revenue ~ Month+ PageValues + ExitRates + OperatingSystems + Region + Administrative+BounceRates+SpecialDay, data = train, family = "binomial")
+predictlogmo <- predict(logmodel1, test, type = "response")
+#predictlogmo
+```
+#logistic regression accuracy
+```{r}
+
+logcm = table(test$Revenue, predictlogmo)
+alogcm_Test <- sum(diag(logcm)) / sum(logcm)
+print(paste('Accuracy for test', alogcm_Test))
+```
+#naivebayes
+```{r}
+naivemodel <- naiveBayes(Revenue ~ .,data =train)
+naive_pred <- predict(naivemodel, newdata = test)
+summary(naivemodel)
+```
+
+```{r}
+naivecm = table(test$Revenue, naive_pred)
+naivecm_Test <- sum(diag(naivecm)) / sum(naivecm)
+print(paste('Accuracy for test', naivecm_Test))
+```
 
 ## Exploratory Data Analysis
 ```{r}
